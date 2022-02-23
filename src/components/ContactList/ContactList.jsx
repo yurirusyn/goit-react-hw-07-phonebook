@@ -1,24 +1,33 @@
 import s from './contactList.css';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
+import { useDeleteContactsMutation } from '../redux/phonebook/phonebookApi';
+import { Rings } from 'react-loader-spinner';
 import { getFilterContacts } from '../redux/phonebook/phonebook-selectors';
-import actions from '../redux/phonebook/phonebook-actions';
-const ContactList = () => {
-  const contacts = useSelector(getFilterContacts);
+
+const ContactList = ({ contacts }) => {
+  const contactsFilter = useSelector(state =>
+    getFilterContacts(state, contacts),
+  );
   const dispatch = useDispatch();
 
-  const removeContacts = id => dispatch(actions.deleteContact(id));
+  const [deleteContacts, { isLoading }] = useDeleteContactsMutation();
+
+  // const removeContacts = id => dispatch(actions.deleteContact(id));
 
   return (
     <>
-      {contacts.map(({ id, name, number }) => {
+      {contactsFilter.map(({ id, name, phone }) => {
         return (
           <div key={id}>
             <>
               <p name={name}>
-                {name} {number}
+                {name} {phone}
               </p>
-              <button onClick={e => removeContacts(id)}>Delete</button>
+              <button onClick={e => deleteContacts(id)} disabled={isLoading}>
+                {isLoading && <Rings color="#00BFFF" height={15} width={15} />}
+                Delete
+              </button>
             </>
           </div>
         );

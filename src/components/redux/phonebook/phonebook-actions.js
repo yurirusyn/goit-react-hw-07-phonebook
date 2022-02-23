@@ -6,7 +6,7 @@ const addContacts = createAction('phonebook/add', contact => ({
 
 const deleteContact = createAction('phonebook/delete');
 
-const filter = createAction('todos/filter');
+const filter = createAction('phonebook/filter');
 
 const contactsActions = { addContacts, deleteContact, filter };
 

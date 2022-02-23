@@ -6,13 +6,15 @@ import { useDispatch } from 'react-redux';
 import actions from '../redux/phonebook/phonebook-actions';
 import { useSelector } from 'react-redux';
 import { getContacts } from '../redux/phonebook/phonebook-selectors';
+import { useAddCotactsMutation } from '../redux/phonebook/phonebookApi';
 
-const ContactForm = () => {
+const ContactForm = ({ contacts }) => {
+  const [addCotacts, { isLoading, isSuccess }] = useAddCotactsMutation();
   const dispatch = useDispatch();
-  const contacts = useSelector(getContacts);
+  // const contacts = useSelector(getContacts);
 
   const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
+  const [phone, setPhone] = useState('');
 
   const onInput = e => {
     const { name, value } = e.target;
@@ -23,7 +25,7 @@ const ContactForm = () => {
         setName(value);
         break;
       case 'number':
-        setNumber(value);
+        setPhone(value);
         break;
       default:
         return;
@@ -34,8 +36,7 @@ const ContactForm = () => {
     e.preventDefault();
     const newName = {
       name,
-      number,
-      id: shortid.generate(),
+      phone,
     };
 
     const searchSameName = contacts.map(cont => cont.name).includes(name);
@@ -44,14 +45,14 @@ const ContactForm = () => {
     } else if (name.length === 0) {
       alert('Fields must be filled!');
     } else {
-      dispatch(actions.addContacts(newName));
+      addCotacts(newName);
       resetForm();
     }
   };
 
   const resetForm = () => {
     setName('');
-    setNumber('');
+    setPhone('');
   };
 
   return (
@@ -72,7 +73,7 @@ const ContactForm = () => {
         <input
           type="tel"
           name="number"
-          value={number}
+          value={phone}
           placeholder="Enter Tel"
           pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
           title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"

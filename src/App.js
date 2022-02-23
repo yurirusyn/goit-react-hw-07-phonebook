@@ -4,8 +4,10 @@ import './App.css';
 import ContactForm from './components/ContactForm/ContactForm';
 import ContactList from './components/ContactList/ContactList';
 import Filter from './components/Filter/Filter';
+import { useGetContactsQuery } from './components/redux/phonebook/phonebookApi';
 
 const App = () => {
+  const { data: contacts, isLoading } = useGetContactsQuery();
   // state = {
   //   contacts: [
   //     { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
@@ -79,10 +81,10 @@ const App = () => {
   return (
     <>
       <h1>Phonebook</h1>
-      <ContactForm />
+      {contacts && <ContactForm contacts={contacts} />}
       <h2>Contacts</h2>
       <Filter />
-      <ContactList />
+      {contacts && <ContactList contacts={contacts} />}
     </>
   );
 };
